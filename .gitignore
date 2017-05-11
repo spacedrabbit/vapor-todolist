@@ -38,6 +38,8 @@ playground.xcworkspace
 .build/
 Packages
 Config/secrets
+
+# specifically for this project i renamed some unncessary git folders/files
 ._git
 ._gitignore
 
