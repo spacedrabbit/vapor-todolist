@@ -165,4 +165,42 @@ drop.get("customers") { request in
   return try JSON(node: result)
 }
 
+
+// MARK:  - Validators -
+// MARK: Email
+// you get free email validators built into vapor
+drop.post("register") { request in
+  guard let email: Valid<Email> = try request.data["email"]?.validated() else {
+    throw Abort.custom(status: .notAcceptable, message: "Your email could not be validated")
+  }
+  
+  return "Validated: \(email)"
+}
+
+// MARK: Unique Items
+drop.post("unique") { request in
+  guard let inputCommaSeperated = request.data["input"]?.string else {
+    throw Abort.badRequest
+  }
+  
+  // This is saying the return object will be a unique array of string, generically
+  // The input expected is a comma-seperated list of values
+  let unique: Valid<Unique<[String]>> = try inputCommaSeperated.components(separatedBy: ",").validated()
+  return "Validated Unique: \(unique)"
+}
+
+// MARK: Matching Keys
+drop.post("keys") { request in
+  
+  // "keyCode" here is the key looked for in the json body
+  guard let keyCode = request.data["keyCode"]?.string else {
+    throw Abort.badRequest
+  }
+  
+  // we're validation on the value of keyCode against "Secret!!!"
+  let key: Valid<Matches<String>> = try keyCode.validated(by: Matches("Secret!!!"))
+  return "Validated \(key)"
+}
+
+// MARK: Custom Validator
 drop.run()
