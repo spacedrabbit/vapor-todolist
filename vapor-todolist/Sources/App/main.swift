@@ -1,4 +1,5 @@
 import Vapor
+import VaporSQLite
 import HTTP
 
 class Customer: NodeRepresentable {
@@ -23,8 +24,14 @@ class Customer: NodeRepresentable {
 }
 
 
-
 let drop = Droplet()
+
+// MARK: Adding in SQlite support and querying for version #
+try drop.addProvider(VaporSQLite.Provider.self)
+drop.get("version") { request in
+  let result = try drop.database?.driver.raw("SELECT sqlite_version()")
+  return try JSON(node: result)
+}
 
 // MARK: Basic Routing
 drop.get("hello") { request in
@@ -109,5 +116,22 @@ drop.post("users") { request in
   return try JSON(node: newUser)
 }
 
+
+// MARK: Inserting into SQLite
+// create an endpoint /customers/create for POST requests
+drop.post("customers", "create") { request in
+  
+  // look for our keys
+  guard let first = request.json?["first_name"]?.string,
+        let last = request.json?["last_name"]?.string else {
+    throw Abort.badRequest
+  }
+  
+  // raw sends in raw SQL queries... god I hope there is another option
+  let result = try drop.database?.driver.raw("INSERT INTO Customer(firstName, lastName) VALUES(?,?)", [first, last])
+  // something must be returned. in this case it ends up being an empty array if all goes well. 
+  // otherwise we'll receive some useful error info to help debug
+  return try JSON(node: result)
+}
 
 drop.run()
