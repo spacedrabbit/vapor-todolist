@@ -77,4 +77,37 @@ drop.get("customer", String.self) { request, userId in
   return "User Id: \(userId)"
 }
 
+
+// MARK: Groups
+// Groups logically group routes under a specific parent-level URL path
+drop.group("tasks") { groups in
+  // note: this assumes that the URL will be prefixed with /tasks
+  // so having a redirect as "vapor" evaluates as "/tasks/vapor"
+  // to use a route outside of this path, you need to give a relative 
+  // path like "/vapor"
+  groups.get("all") { request in
+      return Response(redirect: "/vapor")
+  }
+  
+  groups.get("due_soon") { request in
+    return Response(redirect: "/names")
+    
+  }
+}
+
+// MARK: POST Requests
+// You can inspect the request object for query params, header info, body info etc..
+// the way this is tested is via postman, just be sure to set breakpoints ahead of time before you build/run
+drop.post("users") { request in
+
+  guard let firstName = request.json?["first_name"]?.string,
+    let lastName = request.json?["last_name"]?.string else {
+      throw Abort.badRequest
+  }
+  
+  let newUser = Customer(first: firstName, last: lastName)
+  return try JSON(node: newUser)
+}
+
+
 drop.run()
