@@ -3,12 +3,14 @@ import VaporSQLite
 import HTTP
 
 class Customer: NodeRepresentable {
+  var customerId: Int!
   var firstName: String!
   var lastName: String!
   
-  init(first: String, last: String) {
+  init(first: String, last: String, id: Int = -1) {
     self.firstName = first
     self.lastName = last
+    self.customerId = id
   }
   
   // todo: look up the documentation changes for NodeRepresentable
@@ -132,6 +134,26 @@ drop.post("customers", "create") { request in
   // something must be returned. in this case it ends up being an empty array if all goes well. 
   // otherwise we'll receive some useful error info to help debug
   return try JSON(node: result)
+}
+
+// MARK: Retrieving from SQLite
+drop.get("customers", "all") { request in
+  var customers: [Customer] = []
+  
+  // this is likely to return a number of results, but even if only 1 it will still get
+  // returned as an array
+  let result = try drop.database?.driver.raw("SELECT customerId,firstName,lastName FROM Customer;")
+  
+  guard let nodeArray = result?.nodeArray else {
+    return try JSON(node: customers)
+  }
+
+  for node in nodeArray {
+    let customer: Customer = Customer(first: node["firstName"]!.string!, last: node["lastName"]!.string!, id: node["customerId"]!.int!)
+    customers.append(customer)
+  }
+  
+  return try JSON(node: customers)
 }
 
 drop.run()
