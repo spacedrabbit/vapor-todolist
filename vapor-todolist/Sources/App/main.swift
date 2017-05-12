@@ -156,4 +156,13 @@ drop.get("customers", "all") { request in
   return try JSON(node: customers)
 }
 
+drop.get("customers") { request in
+  guard let query = request.query?["name"]?.string else {
+    throw Abort.badRequest
+  }
+  
+  let result = try drop.database?.driver.raw("SELECT * from Customer WHERE firstName IS \"\(query)\"")
+  return try JSON(node: result)
+}
+
 drop.run()
