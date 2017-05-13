@@ -89,7 +89,7 @@ drop.get("customer", String.self) { request, userId in
 
 // MARK: Groups
 // Groups logically group routes under a specific parent-level URL path
-drop.group("tasks") { groups in
+drop.group("_tasks") { groups in
   // note: this assumes that the URL will be prefixed with /tasks
   // so having a redirect as "vapor" evaluates as "/tasks/vapor"
   // to use a route outside of this path, you need to give a relative 
@@ -233,5 +233,6 @@ drop.post("register") { request in
 let controller = TasksViewController()
 controller.addRoutes(drop: drop)
 
-
+// MARK: RESTful Controller
+drop.resource("task", controller)
 drop.run()
