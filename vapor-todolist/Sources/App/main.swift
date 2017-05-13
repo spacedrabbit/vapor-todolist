@@ -227,5 +227,11 @@ drop.post("register") { request in
 
 // MARK: - Controllers -
 
+// "registering" this router
+// because this singleton obj can check its routes, this "registering" is really just
+// defering the drop.get code to another location. 
+let controller = TasksViewController()
+controller.addRoutes(drop: drop)
+
 
 drop.run()
