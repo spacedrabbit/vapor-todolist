@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		14178B331EC7AC7C000A3597 /* PasswordEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14178B321EC7AC7C000A3597 /* PasswordEvaluator.swift */; };
 		OBJ_1463 /* libc.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_1381 /* libc.swift */; };
 		OBJ_1470 /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_1383 /* Array.swift */; };
 		OBJ_1471 /* Bool+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_1384 /* Bool+String.swift */; };
@@ -5401,6 +5402,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		14178B321EC7AC7C000A3597 /* PasswordEvaluator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasswordEvaluator.swift; sourceTree = "<group>"; };
 		OBJ_100 /* CORSConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CORSConfiguration.swift; sourceTree = "<group>"; };
 		OBJ_1000 /* lhash.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = lhash.c; sourceTree = "<group>"; };
 		OBJ_1001 /* m_dss.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = m_dss.c; sourceTree = "<group>"; };
@@ -8972,7 +8974,7 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		OBJ_5 /*  */ = {
+		OBJ_5 = {
 			isa = PBXGroup;
 			children = (
 				OBJ_6 /* Package.swift */,
@@ -8985,7 +8987,6 @@
 				OBJ_19 /* Dependencies */,
 				OBJ_1413 /* Products */,
 			);
-			name = "";
 			sourceTree = "<group>";
 		};
 		OBJ_504 /* Parser */ = {
@@ -10196,6 +10197,7 @@
 				OBJ_9 /* main.swift */,
 				OBJ_10 /* Controllers */,
 				OBJ_12 /* Models */,
+				14178B321EC7AC7C000A3597 /* PasswordEvaluator.swift */,
 			);
 			name = App;
 			path = Sources/App;
@@ -11546,7 +11548,7 @@
 			knownRegions = (
 				en,
 			);
-			mainGroup = OBJ_5 /*  */;
+			mainGroup = OBJ_5;
 			productRefGroup = OBJ_1413 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -13062,6 +13064,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
+				14178B331EC7AC7C000A3597 /* PasswordEvaluator.swift in Sources */,
 				OBJ_3841 /* main.swift in Sources */,
 				OBJ_3842 /* PostController.swift in Sources */,
 				OBJ_3843 /* Post.swift in Sources */,

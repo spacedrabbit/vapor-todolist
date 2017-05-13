@@ -202,5 +202,30 @@ drop.post("keys") { request in
   return "Validated \(key)"
 }
 
-// MARK: Custom Validator
+
+// MARK: - Custom Validators
+drop.post("register") { request in
+  guard let inputPassword = request.data["password"]?.string else {
+    throw Abort.badRequest
+  }
+  
+  // between 5-12 and not just alpha numeric (so, with special characters)
+//  let password = try inputPassword.validated(by: !OnlyAlphanumeric.self &&
+//                                                  Count.containedIn(low: 5, high: 12))
+  
+//  let password: Valid<PasswordValidator> = try inputPassword.validated(by: PasswordValidator.self)
+  
+  // TODO: how does this work by simply calling .validated and saying the Valid object will be of type PasswordValidator
+  let password: Valid<PasswordValidator> = try inputPassword.validated()
+  
+  // these two will return bools
+  let passwordIsValid = inputPassword.passes(PasswordValidator.self)
+  let isValid = try inputPassword.tested(by: PasswordValidator.self)
+  
+  return "Validated password: \(password)"
+}
+
+// MARK: - Controllers -
+
+
 drop.run()
