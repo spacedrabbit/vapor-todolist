@@ -225,6 +225,18 @@ drop.post("register") { request in
   return "Validated password: \(password)"
 }
 
+// MARK: - RandomUser
+drop.get("random_user") { request in
+  
+  let response = try drop.client.get("https://randomuser.me/api")
+  
+  guard let responseData = response.data["results"]?.array?[0] as? JSON else {
+    throw Abort.badRequest
+  }
+
+  return responseData
+}
+
 // MARK: - Controllers -
 
 // "registering" this router
