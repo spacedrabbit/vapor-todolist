@@ -6,7 +6,8 @@
     "addons": [],
     "buildpacks": [
         {
-            "url": "https://github.com/vapor/heroku-buildpack"
+            "url": "https://github.com/vapor/heroku-buildpack",
+            "url": "https://github.com/kylef/heroku-buildpack-swift"
         }
     ]
 }
