@@ -18,6 +18,8 @@ final class TaskViewController {
   func addRoutes(drop: Droplet) {
     drop.get("task", "all", handler: getAll)
     drop.post("task", "new", handler: create)
+    drop.put("task", "update", handler: update)
+    drop.delete("task", "delete", handler: delete)
   }
   
   func getAll(request: Request) throws -> ResponseRepresentable {
@@ -36,18 +38,53 @@ final class TaskViewController {
   func create(request: Request) throws -> ResponseRepresentable {
     
     guard
-      let id = request.json?["id"]?.int,
+      //let id = request.json?["id"]?.int, // this is created automatically since it is a unique key
       let taskTitle = request.json?["title"]?.string
     else {
         throw Abort.badRequest
     }
     
     // TODO: look up this sql syntax
-    guard let _ = try drop.database?.driver.raw("INSERT INTO Tasks (taskID, title) VALUES (?, ?)", [id, taskTitle]) else {
+    // TODO: how to make it to autoincrement
+    guard let _ = try drop.database?.driver.raw("INSERT INTO Tasks (title) VALUES (?)", [taskTitle]) else {
       throw Abort.custom(status: .notAcceptable, message: "Could not insert")
     }
     
     return "Task added"
+  }
+  
+  func update(request: Request) throws -> ResponseRepresentable {
+    guard
+      let id = request.json?["id"]?.int,
+      let taskTitle = request.json?["title"]?.string
+    else { throw Abort.badRequest }
+    
+    guard let _ = try drop.database?.driver.raw("UPDATE Tasks SET title = (?) WHERE taskID = (?)", [taskTitle, id]) else {
+      throw Abort.custom(status: .notAcceptable, message: "Could not update record with ID: \(id)")
+    }
+    
+    return try JSON(node: ["success":true])
+  }
+  
+  func delete(request: Request) throws -> ResponseRepresentable {
+    
+    guard
+      let id = request.json?["id"]?.int
+    else { throw Abort.badRequest }
+    
+    guard let record = try drop.database?.driver.raw("SELECT * FROM Tasks WHERE taskID = (?)", [id]) else {
+      throw Abort.notFound
+    }
+    
+    guard let verifiedCount = record.array?.count, verifiedCount > 0 else {
+      throw Abort.notFound
+    }
+    
+    guard let _ = try drop.database?.driver.raw("DELETE FROM Tasks WHERE taskID = (?)", [id]) else {
+      throw Abort.custom(status: .notAcceptable, message: "Could not delete record with ID: \(id)")
+    }
+    
+    return try JSON(node: ["success":true])
   }
   
 }
