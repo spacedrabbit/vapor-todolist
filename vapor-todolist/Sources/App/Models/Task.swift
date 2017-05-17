@@ -10,10 +10,28 @@ import Foundation
 import Vapor
 import HTTP
 
-class Task: StringInitializable {
-  var name: String!
+class Task: NodeRepresentable {
+  var taskId: Int!
+  var title: String!
   
-  required init?(from string: String) throws {
-    self.name = string
+  func makeNode(context: Context) throws -> Node {
+    return try Node(node: ["taskId":self.taskId, "title": self.title])
+  }
+}
+
+
+extension Task {
+  convenience init?(node: Node) {
+    self.init()
+    
+    guard
+      let taskId = node["taskID"]?.int,
+      let title = node["title"]?.string
+    else {
+        return nil
+    }
+    
+    self.taskId = taskId
+    self.title = title
   }
 }

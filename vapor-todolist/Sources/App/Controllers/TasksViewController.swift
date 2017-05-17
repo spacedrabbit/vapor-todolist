@@ -8,9 +8,61 @@
 
 import Foundation
 import Vapor
+import VaporSQLite
 import HTTP
 
-final class TasksViewController {
+// MARK: - Newer Lesson
+final class TaskViewController {
+  
+  // TODO: look into the function signature for handler to explain to the class
+  func addRoutes(drop: Droplet) {
+    drop.get("task", "all", handler: getAll)
+    drop.post("task", "new", handler: create)
+  }
+  
+  func getAll(request: Request) throws -> ResponseRepresentable {
+    guard let result = try drop.database?.driver.raw("SELECT * FROM Tasks;") else {
+      throw Abort.badRequest
+    }
+    
+    guard let nodes = result.nodeArray else {
+      return try JSON(node: [])
+    }
+    
+    let tasks = nodes.flatMap{ Task(node: $0) }
+    return try JSON(node: tasks)
+  }
+  
+  func create(request: Request) throws -> ResponseRepresentable {
+    
+    guard
+      let id = request.json?["id"]?.int,
+      let taskTitle = request.json?["title"]?.string
+    else {
+        throw Abort.badRequest
+    }
+    
+    // TODO: look up this sql syntax
+    guard let _ = try drop.database?.driver.raw("INSERT INTO Tasks (taskID, title) VALUES (?, ?)", [id, taskTitle]) else {
+      throw Abort.custom(status: .notAcceptable, message: "Could not insert")
+    }
+    
+    return "Task added"
+  }
+  
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - Older lesson -
+final class DemoTasksViewController {
   
   func addRoutes(drop: Droplet) {
     drop.get("task", "all", handler: getAllTasks)
@@ -40,8 +92,8 @@ final class TasksViewController {
 }
 
 // in order to be a RESTful view controller, you need to implement resourceRepresentable
-extension TasksViewController: ResourceRepresentable {
-  func makeResource() -> Resource<Task> {
-    return Resource(index: index, show: show)
-  }
-}
+//extension DemoTasksViewController: ResourceRepresentable {
+//  func makeResource() -> Resource<Task> {
+//    return Resource(index: index, show: show)
+//  }
+//}
